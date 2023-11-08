@@ -1,3 +1,4 @@
+import GenreList from "../models/GenreList";
 import Movies from "../models/Movies";
 
 const handleMovie = async( rawPages )=>{
@@ -69,4 +70,52 @@ const handleMovieTopRate = async (rawPages) =>{
   }
 }
 
-module.exports = { handleMovie, handleMovieTopRate }
+const handleMovieDiscover = async( rawPages,rawGenre)=>{
+  try {
+    // Movies List form Models
+    /**
+     * Truyền vào 1 tên, Từ Tên đó chọc vào db genreList
+     * Sau đó lấy ra id với tên tương ứng
+     * Sau đó từ cái id của genreList findAll where id = genre_ids
+     */
+    const genre = await GenreList()
+    if (rawGenre === ''){
+      return {
+        EM: "Not found genre parameter",
+        EC: -2,
+        DT: '',
+      }
+    }
+    const currentGenre = genre.find((genre) => genre.name === rawGenre)
+    const movieList = await Movies()
+    // Filter movies that have the specified genre_id
+    const moviesWithGenre = movieList.filter((movie) =>
+      movie.genre_ids.includes(currentGenre.id)
+    );
+    const itemsPerPage = 20; // Number of items per page
+    const page = rawPages || 1; // Current page (default to 1 if not provided)
+    const totalItems = moviesWithGenre.length; // Total number of movies
+    console.log(totalItems)
+    const skip = (page - 1) * itemsPerPage; // Skip movies based on the current page
+    const results = moviesWithGenre.slice(skip, skip + itemsPerPage);
+    const genre_name = currentGenre.name
+    const total_pages = Math.ceil(totalItems / itemsPerPage);
+    return{
+      EM: 'Ok!',
+      EC: 0,
+      DT: {
+        results,
+        page,
+        total_pages,
+        genre_name,
+      },
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      EM: 'Something went wrong in services',
+      EC: -2
+    }
+  }
+}
+module.exports = { handleMovie, handleMovieTopRate, handleMovieDiscover }

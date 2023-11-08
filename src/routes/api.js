@@ -8,6 +8,7 @@ const initAPIRouter = (app) => {
   router.get('/user', handleUserToken.getUserToken)
   router.get('/movies/trending', handleMovie.getMovieTrending)
   router.get('/movies/top-rate', handleMovie.getMovieTopRate)
+  router.get('/movies/discover', handleMovie.getMovieDiscover)
   return app.use("/api/v1", router);
 };
 
