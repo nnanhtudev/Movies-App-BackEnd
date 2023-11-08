@@ -1,6 +1,6 @@
 import movieServices from '../services/movieServices'
-
-const getMovieTrending = async (req, res) =>{
+import capitalizeFirstLetter from '../utils/capitalizeFirstLetter'
+const getMovieTrending = async (req, res) => {
   try {
     let data = await movieServices.handleMovie(req.query.page)
     return res.status(200).json({
@@ -18,7 +18,7 @@ const getMovieTrending = async (req, res) =>{
   }
 }
 
-const getMovieTopRate = async (req, res) =>{
+const getMovieTopRate = async (req, res) => {
   try {
     let data = await movieServices.handleMovieTopRate(req.query.page)
     return res.status(200).json({
@@ -36,9 +36,24 @@ const getMovieTopRate = async (req, res) =>{
   }
 }
 
-const getMovieDiscover = async (req, res) =>{
+const getMovieDiscover = async (req, res) => {
   try {
-    let data = await movieServices.handleMovieDiscover(req.query.page, req.query.genre)
+    if (!req.query.genre) {
+      return res.status(400).json({
+        EM: "Not found genre prams", //error message,
+        EC: -2, //error code
+        DT: '', //data
+      })
+    }
+    if (req.query.genre === '') {
+      return res.status(400).json({
+        EM: 'Not found that genre id', //error message,
+        EC: -2, //error code
+        DT: '', //data
+      })
+    }
+    let covertInput = capitalizeFirstLetter(req.query.genre)
+    let data = await movieServices.handleMovieDiscover(req.query.page, covertInput)
     return res.status(200).json({
       EM: data.EM, //error message,
       EC: data.EC, //error code

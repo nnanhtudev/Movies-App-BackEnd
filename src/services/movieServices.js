@@ -79,13 +79,6 @@ const handleMovieDiscover = async( rawPages,rawGenre)=>{
      * Sau đó từ cái id của genreList findAll where id = genre_ids
      */
     const genre = await GenreList()
-    if (rawGenre === ''){
-      return {
-        EM: "Not found genre parameter",
-        EC: -2,
-        DT: '',
-      }
-    }
     const currentGenre = genre.find((genre) => genre.name === rawGenre)
     const movieList = await Movies()
     // Filter movies that have the specified genre_id
@@ -95,7 +88,6 @@ const handleMovieDiscover = async( rawPages,rawGenre)=>{
     const itemsPerPage = 20; // Number of items per page
     const page = rawPages || 1; // Current page (default to 1 if not provided)
     const totalItems = moviesWithGenre.length; // Total number of movies
-    console.log(totalItems)
     const skip = (page - 1) * itemsPerPage; // Skip movies based on the current page
     const results = moviesWithGenre.slice(skip, skip + itemsPerPage);
     const genre_name = currentGenre.name
