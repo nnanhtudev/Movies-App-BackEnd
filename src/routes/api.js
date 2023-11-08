@@ -10,6 +10,7 @@ const initAPIRouter = (app) => {
   router.get('/movies/top-rate', handleMovie.getMovieTopRate)
   router.get('/movies/discover', handleMovie.getMovieDiscover)
   router.post('/movies/video', handleMovie.postMovieVideo)
+  router.post('/movies/search', handleMovie.postMovieSearch)
   return app.use("/api/v1", router);
 };
 

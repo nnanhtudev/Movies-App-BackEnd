@@ -1,5 +1,5 @@
 import movieServices from '../services/movieServices'
-import capitalizeFirstLetter from '../utils/capitalizeFirstLetter'
+import { capitalizeFirstLetter } from '../utils/converInput'
 
 const getMovieTrending = async (req, res) => {
   try {
@@ -102,4 +102,21 @@ const postMovieVideo = async (req, res) => {
   }
 }
 
-module.exports = { getMovieTrending, getMovieTopRate, getMovieDiscover, postMovieVideo }
+const postMovieSearch = async (req, res) => {
+  try {
+    let dataMovieSearch = await movieServices.handleMovieSearch(req.query.pages, req.query.keyword)
+    return res.status(200).json({
+      EM: 'Ok', //error message,
+      EC: 0, //error code
+      DT: dataMovieSearch.DT, //data
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      EM: 'error from server', //error message,
+      EC: -1, //error code
+      DT: '', //data
+    })
+  }
+}
+module.exports = { getMovieTrending, getMovieTopRate, getMovieDiscover, postMovieVideo, postMovieSearch }

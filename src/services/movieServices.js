@@ -141,4 +141,55 @@ const handleMovieVideo = async (film_id) => {
     }
   }
 }
-module.exports = { handleMovie, handleMovieTopRate, handleMovieDiscover, handleMovieVideo }
+
+const handleMovieSearch = async (pages, keyword) => {
+  try {
+    // Movies List form Models
+    const movieList = await Movies();
+    const keywords = keyword.toLowerCase().replace(/\s/g, '');
+    const FindMovie = () => {
+      const TitleByKeyword = movieList.filter((movie) =>
+        movie.title && movie.title.toLowerCase().includes(keywords));
+      const OverViewByKeyword = movieList.filter((movie) =>
+        movie.overview && movie.overview.toLowerCase().includes(keywords));
+      if (TitleByKeyword.length > 0 && OverViewByKeyword.length > 0) {
+        const combinedArray = TitleByKeyword.concat(OverViewByKeyword);
+        return combinedArray;
+      } else if (TitleByKeyword.length > 0) {
+        return TitleByKeyword;
+      } else if (OverViewByKeyword.length > 0) {
+        return OverViewByKeyword;
+      }
+    };
+
+    const ArrFindByKeyword = await FindMovie();
+    const itemsPerPage = 20; // Number of items per page
+    const page = pages || 1; // Current page (default to 1 if not provided)
+    const totalItems = ArrFindByKeyword.length; // Total number of movies
+    const skip = (page - 1) * itemsPerPage; // Skip movies based on the current page
+
+    const results = ArrFindByKeyword
+      .sort((a, b) => b.vote_average - a.vote_average) // Sort by vote_average in descending order
+      .slice(skip, skip + itemsPerPage); // Get the movies for the current page
+    const total_pages = Math.ceil(totalItems / itemsPerPage);
+
+    return {
+      EM: 'Ok!',
+      EC: 0,
+      DT: {
+        page,
+        results,
+        total_pages,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: 'Something went wrong in services',
+      EC: -2,
+      DT: ''
+    };
+  }
+};
+
+module.exports = { handleMovie, handleMovieTopRate, handleMovieDiscover, handleMovieVideo, handleMovieSearch }

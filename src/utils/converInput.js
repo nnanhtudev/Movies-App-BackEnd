@@ -5,4 +5,7 @@ const capitalizeFirstLetter = (inputString) => {
     .join(' '); // Kết hợp các từ lại thành chuỗi
 }
 
-export default capitalizeFirstLetter
+
+
+
+module.exports = { capitalizeFirstLetter }
