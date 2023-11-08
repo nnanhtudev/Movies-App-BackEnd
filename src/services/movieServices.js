@@ -1,12 +1,13 @@
 import GenreList from "../models/GenreList";
 import Movies from "../models/Movies";
+import MovieVideoToken from "../models/VideoList";
 
-const handleMovie = async( rawPages )=>{
+const handleMovie = async (rawPages) => {
   try {
     // Movies List form Models
     const movieList = await Movies()
     // Số phần tử trên mỗi trang
-    const itemsPerPage = 20; 
+    const itemsPerPage = 20;
     // Trang hiện tại (nếu không có, mặc định là trang 1
     const page = rawPages || 1
     // Tính toán số lượng phim
@@ -19,7 +20,7 @@ const handleMovie = async( rawPages )=>{
     const total_pages = Math.ceil(totalItems / itemsPerPage);
     if (movieList) {
       // Trả về kết quả
-      return{
+      return {
         EM: 'Ok!',
         EC: 0,
         DT: {
@@ -38,7 +39,7 @@ const handleMovie = async( rawPages )=>{
   }
 }
 
-const handleMovieTopRate = async (rawPages) =>{
+const handleMovieTopRate = async (rawPages) => {
   try {
     // Movies List form Models
     const movieList = await Movies()
@@ -70,7 +71,7 @@ const handleMovieTopRate = async (rawPages) =>{
   }
 }
 
-const handleMovieDiscover = async( rawPages,rawGenre)=>{
+const handleMovieDiscover = async (rawPages, rawGenre) => {
   try {
     // Movies List form Models
     /**
@@ -92,7 +93,7 @@ const handleMovieDiscover = async( rawPages,rawGenre)=>{
     const results = moviesWithGenre.slice(skip, skip + itemsPerPage);
     const genre_name = currentGenre.name
     const total_pages = Math.ceil(totalItems / itemsPerPage);
-    return{
+    return {
       EM: 'Ok!',
       EC: 0,
       DT: {
@@ -110,4 +111,34 @@ const handleMovieDiscover = async( rawPages,rawGenre)=>{
     }
   }
 }
-module.exports = { handleMovie, handleMovieTopRate, handleMovieDiscover }
+
+const handleMovieVideo = async (film_id) => {
+  try {
+    const videoList = await MovieVideoToken()
+    const video = videoList.filter((video) => video.id == film_id)
+    const currentVideo = video[0].videos
+    const isCurrentVideo = currentVideo.filter((video) => video.site == 'YouTube' && video.official === true)
+    const resultsTrailer = isCurrentVideo.filter(video => video.type === 'Trailer')
+    const results = isCurrentVideo.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+    if (resultsTrailer.length > 0) {
+      return {
+        EM: 'Ok!',
+        EC: 0,
+        DT: resultsTrailer,
+      }
+    } else {
+      return {
+        EM: 'Ok!',
+        EC: 0,
+        DT: results,
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      EM: 'Something went wrong in services',
+      EC: -2
+    }
+  }
+}
+module.exports = { handleMovie, handleMovieTopRate, handleMovieDiscover, handleMovieVideo }

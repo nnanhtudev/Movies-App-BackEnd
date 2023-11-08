@@ -1,5 +1,6 @@
 import movieServices from '../services/movieServices'
 import capitalizeFirstLetter from '../utils/capitalizeFirstLetter'
+
 const getMovieTrending = async (req, res) => {
   try {
     let data = await movieServices.handleMovie(req.query.page)
@@ -69,4 +70,36 @@ const getMovieDiscover = async (req, res) => {
   }
 }
 
-module.exports = { getMovieTrending, getMovieTopRate, getMovieDiscover }
+const postMovieVideo = async (req, res) => {
+  try {
+    if (!req.query.film_id) {
+      return res.status(400).json({
+        EM: "Not found film_id params", //error message,
+        EC: -2, //error code
+        DT: '', //data
+      })
+    }
+    let dataMovieVideo = await movieServices.handleMovieVideo(req.query.film_id)
+    if (dataMovieVideo.DT === undefined) {
+      return res.status(404).json({
+        EM: "Not found video", //error message,
+        EC: -3, //error code
+        DT: '', //data  
+      })
+    }
+    return res.status(200).json({
+      EM: dataMovieVideo.EM, //error message,
+      EC: dataMovieVideo.EC, //error code
+      DT: dataMovieVideo.DT, //data
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      EM: 'error from server', //error message,
+      EC: -1, //error code
+      DT: '', //data
+    })
+  }
+}
+
+module.exports = { getMovieTrending, getMovieTopRate, getMovieDiscover, postMovieVideo }
