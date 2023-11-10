@@ -5,7 +5,6 @@ import authMiddleware from '../middleware/authMiddleware'
 const router = express.Router();
 router.use(authMiddleware);
 const initAPIRouter = (app) => {
-  // router.get("/userToken", userToken);
   router.get('/user', handleUserToken.getUserToken)
   router.get('/movies/trending', handleMovie.getMovieTrending)
   router.get('/movies/top-rate', handleMovie.getMovieTopRate)

@@ -1,11 +1,19 @@
 const capitalizeFirstLetter = (inputString) => {
   return inputString
-    .split(' ') // Tách thành các từ bằng khoảng trắng
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Chuyển chữ cái đầu của mỗi từ thành viết hoa
-    .join(' '); // Kết hợp các từ lại thành chuỗi
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
+const normalizeString = (str) => {
+  if (str === undefined) {
+    return;
+  }
+  return str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+};
 
 
 
-module.exports = { capitalizeFirstLetter }
+
+
+module.exports = { capitalizeFirstLetter, normalizeString }

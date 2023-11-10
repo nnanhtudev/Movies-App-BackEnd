@@ -1,9 +1,8 @@
 import movieServices from '../services/movieServices'
-import { capitalizeFirstLetter } from '../utils/converInput'
 
 const getMovieTrending = async (req, res) => {
   try {
-    let data = await movieServices.handleMovie(req.query.page)
+    let data = await movieServices.handleMovie(req.query.page, req.query.limit)
     return res.status(200).json({
       EM: data.EM, //error message,
       EC: data.EC, //error code
@@ -21,7 +20,7 @@ const getMovieTrending = async (req, res) => {
 
 const getMovieTopRate = async (req, res) => {
   try {
-    let data = await movieServices.handleMovieTopRate(req.query.page)
+    let data = await movieServices.handleMovieTopRate(req.query.page, req.query.limit)
     return res.status(200).json({
       EM: data.EM, //error message,
       EC: data.EC, //error code
@@ -53,8 +52,12 @@ const getMovieDiscover = async (req, res) => {
         DT: '', //data
       })
     }
-    let covertInput = capitalizeFirstLetter(req.query.genre)
-    let data = await movieServices.handleMovieDiscover(req.query.page, covertInput)
+    let data = await movieServices.handleMovieDiscover(
+      req.query.page,
+      req.query.genre,
+      req.query.mediaType,
+      req.query.language,
+      req.query.year)
     return res.status(200).json({
       EM: data.EM, //error message,
       EC: data.EC, //error code
@@ -104,10 +107,10 @@ const postMovieVideo = async (req, res) => {
 
 const postMovieSearch = async (req, res) => {
   try {
-    let dataMovieSearch = await movieServices.handleMovieSearch(req.query.pages, req.query.keyword)
+    let dataMovieSearch = await movieServices.handleMovieSearch(req.query.pages, req.query.query)
     return res.status(200).json({
-      EM: 'Ok', //error message,
-      EC: 0, //error code
+      EM: dataMovieSearch.EM, //error message,
+      EC: dataMovieSearch.EC, //error code
       DT: dataMovieSearch.DT, //data
     })
   } catch (error) {

@@ -5,6 +5,8 @@ const initWebRouter = (app) => {
   router.get("/", (req, res) => {
     res.send("Hello World!");
   });
-  return app.use("/", router);
+  app.use("/", router);
+
+  return app
 };
 export default initWebRouter;

@@ -7,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
   }
   let data = await authMiddleServices(token)
   if (+data.EC !== 0) {
-    return res.status(401).json({ EM: 'Unauthorized', EC: 401 });
+    return res.status(401).json({ EM: data.EM, EC: data.EC });
   }
   next();
 };
